@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Web Scraper</title>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+  <form id="checkUrlForm">
+  <div class="form-group">
+    <label for="url">URL</label>
+    <input type="text" name="url" pattern="https?://.+"  class="form-control" id="url">
+  </div>
+  
+  <button type="submit" class="btn btn-default" id="check-url">Check</button>
+</form>
+</div>
+
+</body>
+<script type="text/javascript">
+ $("#checkUrlForm").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    console.log(JSON.stringify({'url': $('#url').val()}));
+    $.ajax({
+           type: "POST",
+           url: '/api/check-url',
+           dataType : 'json', // data type
+           contentType: 'application/json',
+           data: JSON.stringify({'url': $('#url').val()}),
+           success: function(data)
+           {
+               alert(data); // show response from the server response
+           }
+         });
+
+    
+});
+</script>
+</html>
