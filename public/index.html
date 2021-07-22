@@ -19,11 +19,54 @@
   <form id="checkUrlForm">
   <div class="form-group">
     <label for="url">URL</label>
-    <input type="text" name="url" pattern="https?://.+"  class="form-control" id="url">
+    <input type="text" name="url" pattern="https?://.+"  class="form-control" required id="url">
   </div>
   
   <button type="submit" class="btn btn-default" id="check-url">Check</button>
+  
 </form>
+<div class="spinner-border" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+<br/>
+<table class="table" style="display:none">
+  <tbody>
+    <tr>
+      <th>HTML Version</th>
+      <td id="row1">1</td>
+    </tr>
+    <tr>
+      <th>Page Title</th>
+      <td id="row2">John</td>
+     
+    </tr>
+    <tr>
+      <th>Headings</th>
+    <td id="row3">John</td>
+    
+    </tr>
+    <tr>
+      <th>Internal Links</th>
+     <td id="row4">John</td>
+      
+    </tr>
+    <tr>
+      <th>External Links</th>
+     <td id="row5">John</td>
+      
+    </tr>
+    <tr>
+      <th>Inacessible Links</th>
+      <td id="row6">John</td>
+     
+    </tr>
+    <tr>
+      <th>Has Login Form</th>
+     <td id="row7">John</td>
+      
+    </tr>
+  </tbody>
+</table>
 </div>
 
 </body>
@@ -41,7 +84,17 @@
            data: JSON.stringify({'url': $('#url').val()}),
            success: function(data)
            {
-               alert(data); // show response from the server response
+              // alert(data); // show response from the server response
+              if(data.status === 200){
+                $('.table').show();
+                $('#row1').html(data.version)
+                $('#row2').html(data.title)
+                $('#row3').html(data.headings)
+                $('#row4').html(data.internal_links)
+                $('#row5').html(data.external_links)
+                $('#row6').html(data.inaccessible_links)
+                $('#row7').html(data.has_login_form)
+              }
            }
          });
 
