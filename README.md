@@ -8,7 +8,10 @@ simple go web server to scrape web pages using URLs
   go get -u github.com/labstack/echo/v4
   go get -u github.com/lestoni/html-version
   ```
-3. run ```bash go run server.go``
+3. run 
+  ```bash 
+  go run server.go
+  ```
 
 ## Assumptions
 1. If any page contains password type input and subnit type input tag, it is cosidered the page has a login form
