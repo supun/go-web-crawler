@@ -12,6 +12,8 @@
 
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -22,14 +24,11 @@
     <input type="text" name="url" pattern="https?://.+"  class="form-control" required id="url">
   </div>
   
-  <button type="submit" class="btn btn-default" id="check-url">Check</button>
-  
+  <button type="submit" class="btn btn-default" id="check-url">
+   <i class="fa fa-spinner fa-spin" style="display:none" id="loader"></i>Check</button>
 </form>
-<div class="spinner-border" role="status">
-  <span class="sr-only">Loading...</span>
-</div>
 <br/>
-<table class="table" style="display:none">
+<table class="table" id="table1" style="display:none">
   <tbody>
     <tr>
       <th>HTML Version</th>
@@ -67,14 +66,29 @@
     </tr>
   </tbody>
 </table>
+<br/>
+<table class="table"  id="table2" style="display:none">
+  <tbody>
+    <tr>
+      <th>Status</th>
+      <td id="row_1">1</td>
+    </tr>
+    <tr>
+      <th>Error</th>
+      <td id="row_2">John</td>
+     
+    </tr>
+  </tbody>
+</table>
 </div>
 
 </body>
 <script type="text/javascript">
  $("#checkUrlForm").submit(function(e) {
-
+    $('#loader').show();
     e.preventDefault(); // avoid to execute the actual submit of the form.
-
+    $('#table1').hide();
+    $('#table2').hide();
     console.log(JSON.stringify({'url': $('#url').val()}));
     $.ajax({
            type: "POST",
@@ -84,16 +98,29 @@
            data: JSON.stringify({'url': $('#url').val()}),
            success: function(data)
            {
+             $('#loader').hide()
               // alert(data); // show response from the server response
               if(data.status === 200){
-                $('.table').show();
+                $('#table1').show();
                 $('#row1').html(data.version)
                 $('#row2').html(data.title)
-                $('#row3').html(data.headings)
+                var headings = data.headings.map(function(o){
+                  if(o.count>0)
+                return `
+                    <spanclass="p-name"> Name: ${o.type}</span>
+                    <span class="p-loc"> Count: ${o.count}</span></br>
+                `;
+              }); 
+                $('#row3').html(headings)
                 $('#row4').html(data.internal_links)
                 $('#row5').html(data.external_links)
                 $('#row6').html(data.inaccessible_links)
-                $('#row7').html(data.has_login_form)
+                $('#row7').html(data.has_login_form?'YES':'NO')
+              }
+             else if(data.status !== 200){
+                $('#table2').show();
+                $('#row_1').html(data.status)
+                $('#row_2').html(data.status_message)
               }
            }
          });

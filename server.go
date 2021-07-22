@@ -24,6 +24,7 @@ type (
 	}
 
 	HtmlContentResponse struct{
+		StatusMessage string `json:"status_message"`
 		Status int `json:"status"`
 		Version string `json:"version"`
 		Title string `json:"title"`
@@ -51,13 +52,17 @@ func checkUrl(c echo.Context) error{
 	}
 
 	if formdata.URL == ""{
-		return c.JSON(http.StatusBadRequest,"Invalid input")
+		return c.JSON(http.StatusOK,HtmlContentResponse{
+			Status: http.StatusBadRequest,
+			StatusMessage :http.StatusText(http.StatusBadRequest),
+		})
 	}
 	
 	page, err := parse(formdata.URL)
 	if err != nil {
 		return c.JSON(http.StatusOK,HtmlContentResponse{
 			Status: http.StatusNotFound,
+			StatusMessage :http.StatusText(http.StatusNotFound),
 		})
 	}
 	title := getPageTitle(page)
@@ -148,26 +153,25 @@ for {
 	case html.ErrorToken:
 		log.Fatal(err)
 	case html.StartTagToken:
-		
+		heading1.Type = "h1"
+		heading2.Type = "h2"
+		heading3.Type = "h3"
+		heading4.Type = "h4"
+		heading5.Type = "h5"
+		heading6.Type = "h6"
 		tag = token.Data
 		switch tag {
 		case "h1":
-			heading1.Type = "h1"
 			heading1.Count++
 		case "h2":
-			heading2.Type = "h2"
 			heading2.Count++
 		case "h3":
-			heading3.Type = "h3"
 			heading3.Count++
 		case "h4":
-			heading4.Type = "h4"
 			heading4.Count++
 		case "h5":
-			heading5.Type = "h5"
 			heading5.Count++
 		case "h6":
-			heading6.Type = "h6"
 			heading6.Count++
 		default:
 		//	fmt.Println(data)
